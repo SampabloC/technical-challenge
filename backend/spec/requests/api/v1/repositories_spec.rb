@@ -11,7 +11,7 @@ RSpec.describe 'Api::V1::Repositories', type: :request do
 
     it 'search for a repository' do
       get api_v1_users_path, params: { username: 'SampabloC' }
-      get '/api/v1/repos/search', params: { repository_name: "technical-challenge" }
+      get '/api/v1/repos/search', params: { repository_name: 'technical-challenge' }
       body = JSON.parse(response.body)
       expect(response).to have_http_status(200)
       expect(body).to have_key('repository_name')
@@ -19,7 +19,7 @@ RSpec.describe 'Api::V1::Repositories', type: :request do
     end
 
     it 'search for a non existent repository' do
-      get '/api/v1/repos/search', params: { repository_name: "technical_challenge" }
+      get '/api/v1/repos/search', params: { repository_name: 'technical_challenge' }
       body = JSON.parse(response.body)
 
       expect(body['message']).to eq('Repository Not Found')

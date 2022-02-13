@@ -5,10 +5,12 @@ module Api
     class RepositoriesController < ApplicationController
       def index
         repos = Repository.all.order(repository_name: :asc)
-        render json: repos.map { |x| {
-          "User ID": x['user_id'],
-          "Repository Name": x['repository_name']
-        }}
+        render json: repos.map { |x|
+                       {
+                         'User ID': x['user_id'],
+                         'Repository Name': x['repository_name']
+                       }
+                     }
       end
 
       def search_repository
@@ -17,7 +19,7 @@ module Api
           render json: repo
         else
           render json: {
-            message: "Repository Not Found"
+            message: 'Repository Not Found'
           }
         end
       end

@@ -5,9 +5,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [:index]
-      scope "repos" do
-        get '/list', to: "repositories#index"
-        get '/search', to: "repositories#search_repository"
+      scope 'repos' do
+        get '/list', to: 'repositories#index'
+        get '/search', to: 'repositories#search_repository'
       end
     end
   end

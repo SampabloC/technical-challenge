@@ -16,7 +16,7 @@ module Api
         db_user = User.all.find { |u| u.github_id == user['id'] }
         if db_user.nil?
           db_user = save_user(user)
-          save_repos(repos, db_user['id'])                               
+          save_repos(repos, db_user['id'])
         end
         render json: db_user.as_json.except('repositories')
       end
@@ -24,7 +24,7 @@ module Api
       # Save user data
       def save_user(user)
         User.create({ github_id: user['id'], login: user['login'], url: user['html_url'], name: user['name'],
-                                  email: user['email'], avatar_url: user['avatar_url']})
+                      email: user['email'], avatar_url: user['avatar_url'] })
       end
 
       # Save all repositories on each row of Repository table
@@ -32,7 +32,7 @@ module Api
         (0..repositories.length - 1).each do |x|
           repos = repositories[x]
           Repository.create({ user_id: user_id, repository_name: repos['name'], owner: repos['owner']['login'],
-                              visibility: repos['visibility'], url: repos['html_url'], description: repos['description']})
+                              visibility: repos['visibility'], url: repos['html_url'], description: repos['description'] })
         end
       end
 
