@@ -11,14 +11,29 @@ module Api
           f.response :follow_redirects # follow redirects
           f.response :json # decode response bodies as JSON
         end
-        user = conn.get("https://api.github.com/user?user=#{user_params}").body
-        repos = conn.get("https://api.github.com/user/repos?user=#{user_params}", { per_page: 100 }).body
+        user = conn.get("https://api.github.com/users/#{user_params}").body
+        repos = conn.get("https://api.github.com/users/#{user_params}/repos", { per_page: 100 }).body
         db_user = User.all.find { |u| u.github_id == user['id'] }
         if db_user.nil?
-          db_user = User.create({ github_id: user['id'], login: user['login'], url: user['html_url'], name: user['name'],
-                                  email: user['email'], avatar_url: user['avatar_url'], repositories: repos })
+          db_user = save_user(user)
+          save_repos(repos, db_user['id'])
         end
         render json: db_user.as_json.except('repositories')
+      end
+
+      # Save user data
+      def save_user(user)
+        User.create({ github_id: user['id'], login: user['login'], url: user['html_url'], name: user['name'],
+                      email: user['email'], avatar_url: user['avatar_url'] })
+      end
+
+      # Save all repositories on each row of Repository table
+      def save_repos(repositories, user_id)
+        (0..repositories.length - 1).each do |x|
+          repos = repositories[x]
+          Repository.create({ user_id: user_id, repository_name: repos['name'], owner: repos['owner']['login'],
+                              visibility: repos['visibility'], url: repos['html_url'], description: repos['description'] })
+        end
       end
 
       private
